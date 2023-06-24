@@ -9,7 +9,11 @@ data modelling:
 architecture:
 	there is elevator object with following properities id  
 	floor,operational,direction,door_open,requests.
+
+
+ 
 api contracts:
+
 	/elevators/initialize/:
 	this is to initialize the n elevators it takes number of 	
 	elevators as argument

@@ -44,5 +44,6 @@ deployment:
 
 i have used a simple greedy algorithim to assign user elevators which works on minimum distance 
 it assigns nearest operational elevator to the user.
+maximum and minimum floors have been intialized by default.
 	
 	

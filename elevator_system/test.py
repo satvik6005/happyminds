@@ -1,65 +1,63 @@
+import unittest
 import requests
 
-BASE_URL = 'http://localhost:8080'
+class ElevatorTestCase(unittest.TestCase):
 
-# Initialize the elevator system with 3 elevators
-num_elevators = 5
-elevator_id=2
-initialize_url = f'{BASE_URL}/elevators/initialize/'
-initialize_data = {'num_elevators': num_elevators}
-response = requests.post(initialize_url, data=initialize_data)
-if response.status_code == 200:
-    print(f'Elevator system initialized with {num_elevators} elevators.')
-else:
-    print('Failed to initialize the elevator system.')
+    def setUp(self):
+        self.base_url = 'http://localhost:8000'
+        self.headers = {'Content-Type': 'application/json'}
 
-# Get the list of all elevators
-elevators_url = f'{BASE_URL}/elevators/'
-response = requests.get(elevators_url)
-if response.status_code == 200:
-    elevators = response.json()
-    print('List of elevators:')
-    for elevator in elevators:
-        print(elevator)
-else:
-    print('Failed to retrieve the list of elevators.')
+    def test_initialize_elevators(self):
+        num_elevators = 5
+        url = f'{self.base_url}/elevators/initialize/'
+        data = {'num_elevators': num_elevators}
 
+        response = requests.post(url, json=data, headers=self.headers)
+        self.assertEqual(response.status_code, 200)
+        # Add additional assertions to verify the response data or database state
 
+    def test_get_all_elevators(self):
+        url = f'{self.base_url}/elevators/'
 
-# Get the list of requests for elevator 0
-requests_url = f'{BASE_URL}/elevators/{elevator_id}/requests/'
-response = requests.get(requests_url)
-if response.status_code == 200:
-    requests = response.json()
-    print(f'List of requests for elevator {elevator_id}:')
-    for request in requests:
-        print(request)
-else:
-    print(f'Failed to retrieve the list of requests for elevator {elevator_id}.')
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        # Add additional assertions to verify the response data
 
+    def test_move_elevator(self):
+        current_floor = 1
+        destination_floor = 5
+        url = f'{self.base_url}/run/'
+        data = {'current_floor': current_floor, 'destination': destination_floor}
 
+        response = requests.post(url, json=data, headers=self.headers)
+        self.assertEqual(response.status_code, 200)
+        # Add additional assertions to verify the response data
 
-# Mark elevator 0 as not operational
-maintenance_url = f'{BASE_URL}/elevators/{elevator_id}/maintenance/'
-maintenance_data = {'operational': False}
-response = requests.put(maintenance_url, data=maintenance_data)
-if response.status_code == 200:
-    print(f'Elevator {elevator_id} marked as not operational.')
-else:
-    print(f'Failed to mark elevator {elevator_id} as not operational.')
+    def test_mark_elevator_maintenance(self):
+        elevator_id = 1
+        url = f'{self.base_url}/elevators/{elevator_id}/maintenance/'
+        data={"operational": 0}
 
-# Open the door for elevator 0
-door_url = f'{BASE_URL}/elevators/{elevator_id}/door/open/'
-response = requests.put(door_url)
-if response.status_code == 200:
-    print(f'Door of elevator {elevator_id} opened.')
-else:
-    print(f'Failed to open the door of elevator {elevator_id}.')
+        response = requests.put(url,json=data, headers=self.headers)
+        self.assertEqual(response.status_code, 200)
+        # Add additional assertions to verify the response data or database state
 
-# Close the door for elevator 0
-door_url = f'{BASE_URL}/elevators/{elevator_id}/door/close/'
-response = requests.put(door_url)
-if response.status_code == 200:
-    print(f'Door of elevator {elevator_id} closed.')
-else:
-    print(f'Failed to close the door of elevator {elevator_id}.')
+    def test_open_elevator_door(self):
+        elevator_id = 1
+        url = f'{self.base_url}/elevators/{elevator_id}/door/'
+        data={"action":"close"}
+
+        response = requests.put(url,json=data, headers=self.headers)
+        self.assertEqual(response.status_code, 200)
+        # Add additional assertions to verify the response data or database state
+
+    def test_get_elevator_requests(self):
+        elevator_id = 1
+        url = f'{self.base_url}/elevators/{elevator_id}/requests/'
+
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        # Add additional assertions to verify the response data
+
+if __name__ == '__main__':
+    unittest.main()

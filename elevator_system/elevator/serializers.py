@@ -1,14 +1,14 @@
 from rest_framework import serializers
+from .models import Elevator,requests
 
-from django.core.cache import cache
 
-class ElevatorSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    floor = serializers.IntegerField()
-    direction = serializers.ChoiceField(choices=[('up', 'Up'), ('down', 'Down'), ('stop', 'Stop')])
-    door_open = serializers.BooleanField()
-    running = serializers.BooleanField()
-    operational = serializers.BooleanField()
-    requests = serializers.ListField(child=serializers.IntegerField(), read_only=True)
+class ElevatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Elevator
+        fields = ('id', 'floor',  'door_open', 'running', 'operational')
+class requestsserializer(serializers.ModelSerializer):
+    class Meta:
+        model=requests
+        fields=("id","floor","elevator")
 
         
